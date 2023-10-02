@@ -28,78 +28,64 @@ graph = {
 
 # Define the astar function
 def astar(graph, start, end):
-  """Finds the shortest path between two nodes in a graph using the A* search algorithm.
+    # Create a dictionary to store the distance to each vertex.
+    distances = {vertex: float('infinity') for vertex in graph}
+    distances[start] = 0
 
-  Args:
-    graph: A dictionary mapping node names to lists of neighboring nodes and edge costs.
-    start: The name of the start node.
-    end: The name of the end node.
+    # Create a dictionary to store the previous vertex in the path.
+    previous_vertices = {
+        vertex: None for vertex in graph
+    }
 
-  Returns:
-    A list of node names representing the shortest path from the start node to the end node, or
-    None if no path exists.
-  """
+    # Create a priority queue to store vertices that need to be visited.
+    priority_queue = [(0, start)]
 
-  # Create a dictionary to store the distance to each vertex.
-  distances = {vertex: float('infinity') for vertex in graph}
-  distances[start] = 0
+    while len(priority_queue) > 0:
+        # Get the vertex with the smallest total cost from the priority queue.
+        current_cost, current_vertex = heapq.heappop(priority_queue)
 
-  # Create a dictionary to store the previous vertex in the path.
-  previous_vertices = {
-      vertex: None for vertex in graph
-  }
+        # If we have reached the end vertex, we can stop.
+        if current_vertex == end:
+            path = []
+            # Follow the previous_vertices dictionary to build the shortest path.
+            while previous_vertices[current_vertex] is not None:
+                path.append(current_vertex)
+                current_vertex = previous_vertices[current_vertex]
 
-  # Create a priority queue to store vertices that need to be visited.
-  priority_queue = [(0, start)]
+                # Add the start vertex to the path and return it in reverse order.
+            path.append(start)
+            return path[::-1]
 
-  while len(priority_queue) > 0:
-    # Get the vertex with the smallest total cost from the priority queue.
-    current_cost, current_vertex = heapq.heappop(priority_queue)
+        # If we haven't reached the end vertex yet, visit its neighbors.
+        for neighbor, distance in graph[current_vertex]:
+            # Calculate the total cost of visiting the neighbor vertex.
+            new_cost = current_cost + distance + heuristic(neighbor, end)
+            # If we have found a shorter path to the neighbor vertex, update its distance.
+            if new_cost < distances[neighbor]:
+                distances[neighbor] = new_cost
+                previous_vertices[neighbor] = current_vertex
+                heapq.heappush(priority_queue, (new_cost, neighbor))
 
-    # If we have reached the end vertex, we can stop.
-    if current_vertex == end:
-      path = []
-
-      # Follow the previous_vertices dictionary to build the shortest path.
-      while previous_vertices[current_vertex] is not None:
-        path.append(current_vertex)
-        current_vertex = previous_vertices[current_vertex]
-
-      # Add the start vertex to the path and return it in reverse order.
-      path.append(start)
-      return path[::-1]
-
-    # If we haven't reached the end vertex yet, visit its neighbors.
-    for neighbor, distance in graph[current_vertex]:
-      # Calculate the total cost of visiting the neighbor vertex.
-      new_cost = current_cost + distance + heuristic(neighbor, end)
-
-      # If we have found a shorter path to the neighbor vertex, update its distance.
-      if new_cost < distances[neighbor]:
-        distances[neighbor] = new_cost
-        previous_vertices[neighbor] = current_vertex
-        heapq.heappush(priority_queue, (new_cost, neighbor))
-
-  # If we have visited all the vertices and haven't found the end vertex, there is no path.
-  return None
+        # If we have visited all the vertices and haven't found the end vertex, there is no path.
+        return None
 
 def heuristic(node, goal):
-  """Estimates the cost of reaching the goal node from a given node.
+    """Estimates the cost of reaching the goal node from a given node.
 
-  Args:
+    Args:
     node: The name of the current node.
     goal: The name of the goal node.
 
-  Returns:
+    Returns:
     A float representing the estimated cost of reaching the goal node from the current node.
-  """
+    """
 
-  # Calculate the Manhattan distance between the current node and the goal node.
-  x1, y1 = node_coords[node]
-  x2, y2 = node_coords[goal]
-  manhattan_distance = abs(x1 - x2) + abs(y1 - y2)
+    # Calculate the Manhattan distance between the current node and the goal node.
+    x1, y1 = node_coords[node]
+    x2, y2 = node_coords[goal]
+    manhattan_distance = abs(x1 - x2) + abs(y1 - y2)
 
-  return manhattan_distance
+    return manhattan_distance
 
 # Create the GUI
 root = tk.Tk()
@@ -141,16 +127,6 @@ node_coords = {
     'Z': (500, 300)
 }
 
-# Calculate the heuristic costs for each node
-heuristic_costs = {}
-for node in graph:
-    heuristic_costs[node] = heuristic(node, 'Z')
-
-# Display the heuristic costs on the nodes
-for node, coord in node_coords.items():
-    x, y = coord
-    canvas.create_text(x, y - 20, text=f"{heuristic_costs[node]}", font=font_style)
-
 # Draw the nodes of the graph
 node_radius = 20
 for node, coord in node_coords.items():
@@ -183,32 +159,46 @@ dest_combo.pack(side=tk.LEFT, padx=10, pady=10)
 
 # Create the button to find the shortest path
 def find_shortest_path():
-  start = None
-  end = None
+    start = None
+    end = None
 
-  # Get the source and destination cities from the dropdown menus
-  for key, value in city_names.items():
-    if value == source_var.get():
-      start = key
-    if value == dest_var.get():
-      end = key
-
-  # Find the shortest path and display it
-  shortest_path = astar(graph, start, end)
-  if shortest_path:
-    path_str = ' -> '.join([city_names[vertex] for vertex in shortest_path])
-    result_label.config(text=f"Shortest path: {path_str}")
+    # Get the source and destination cities from the dropdown menus
+    for key, value in city_names.items():
+        if value == source_var.get():
+            start = key
+        if value == dest_var.get():
+            end = key
     
-    # Highlight the shortest path on the graph
-    canvas.delete("highlight")
-    for i in range(len(shortest_path) - 1):
-      node1 = shortest_path[i]
-      node2 = shortest_path[i+1]
-      x1, y1 = node_coords[node1]
-      x2, y2 = node_coords[node2]
-      canvas.create_line(x1, y1, x2, y2, width=3, fill="blue", tags="highlight")
-  else:
-    result_label.config(text="No path found")
+    # Calculate the heuristic costs for each node
+    heuristic_costs = {}
+    for node in graph:
+        heuristic_costs[node] = heuristic(node, end)
+    
+
+    # Find the shortest path and display it
+    shortest_path = astar(graph, start, end)
+
+    if shortest_path is not None:
+        # Define the variable path_str
+        path_str = ' -> '.join([city_names[vertex] for vertex in shortest_path])
+        result_label.config(text=f"Shortest path: {path_str}")
+    
+        # Display the heuristic costs on the nodes
+        for node, coord in node_coords.items():
+            x, y = coord
+            canvas.create_text(x, y - 20, text=f"{heuristic_costs[node]}", font=font_style)
+
+
+        # Highlight the shortest path on the graph
+        canvas.delete("highlight")
+        for i in range(len(shortest_path) - 1):
+            node1 = shortest_path[i]
+            node2 = shortest_path[i+1]
+            x1, y1 = node_coords[node1]
+            x2, y2 = node_coords[node2]
+            canvas.create_line(x1, y1, x2, y2, width=3, fill="blue", tags="highlight")
+    else:
+        result_label.config(text="No path found")
     canvas.delete("highlight")
 
 find_button = tk.Button(frame, text="Calculate", command=find_shortest_path)
