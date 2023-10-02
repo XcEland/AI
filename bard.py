@@ -193,11 +193,14 @@ def find_shortest_path():
     heuristic_costs = {}
     for node in graph:
         heuristic_costs[node] = heuristic(node, end)
+        
+    # Clear the old heuristic costs from the canvas
+    canvas.delete("heuristic_costs")
     
     # Display the heuristic costs on the nodes
     for node, coord in node_coords.items():
         x, y = coord
-        canvas.create_text(x, y - 20, text=f"{heuristic_costs[node]}", font=font_style)
+        canvas.create_text(x, y - 20, text=f"{heuristic_costs[node]}", font=font_style, tags="heuristic_costs")
     
     # Highlight the shortest path on the graph
     canvas.delete("highlight")
