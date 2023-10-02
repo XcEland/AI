@@ -141,6 +141,16 @@ node_coords = {
     'Z': (500, 300)
 }
 
+# Calculate the heuristic costs for each node
+heuristic_costs = {}
+for node in graph:
+    heuristic_costs[node] = heuristic(node, 'Z')
+
+# Display the heuristic costs on the nodes
+for node, coord in node_coords.items():
+    x, y = coord
+    canvas.create_text(x, y - 20, text=f"{heuristic_costs[node]}", font=font_style)
+
 # Draw the nodes of the graph
 node_radius = 20
 for node, coord in node_coords.items():
@@ -167,7 +177,7 @@ source_combo.pack(side=tk.LEFT, padx=10, pady=10)
 dest_label = tk.Label(frame, text="Destination City:")
 dest_label.pack(side=tk.LEFT, padx=10, pady=10)
 dest_var = tk.StringVar(root)
-dest_var.set('Bulawayo')
+dest_var.set('Gweru')
 dest_combo = tk.ttk.Combobox(frame, textvariable=dest_var, values=list(city_names.values()))
 dest_combo.pack(side=tk.LEFT, padx=10, pady=10)
 
