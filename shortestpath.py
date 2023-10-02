@@ -1,9 +1,9 @@
 # Import modules
+import heapq
+import math
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-import math
-import heapq
 
 # Create a dictionary to store the city names
 city_names = {
@@ -13,7 +13,7 @@ city_names = {
     'D': 'Masvingo',
     'E': 'Bulawayo',
     'H': 'Beitbridge',
-    'Z': 'Zvishavane'   
+    'Z': 'Zvishavane'
 }
 
 # Create the graph
