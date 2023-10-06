@@ -135,7 +135,7 @@ font_style = ("Arial", 18)
 header_label = tk.Label(root, text="Shortest Path Between Cities", font=("Arial", 24), bg="white")
 header_label.pack(pady=20)
 
-author_label = tk.Label(root, text="UZ Campus", font=("Arial", 18), bg="white")
+author_label = tk.Label(root, text="Zimbabwe Cities", font=("Arial", 18), bg="white")
 author_label.pack()
 
 # Create a frame to hold the canvas and buttons
@@ -186,12 +186,6 @@ node_coords = {
 node_radius = 20
 
 # Draw the nodes of the graph
-for node, coord in node_coords.items():
-    x, y = coord
-    canvas.create_oval(x - node_radius, y - node_radius, x + node_radius, y + node_radius, fill="lightgray")
-    canvas.create_text(x, y, text=city_names[node], font=font_style)
-
-
 for node, coord in node_coords.items():
     x, y = coord
     canvas.create_oval(x - node_radius, y - node_radius, x + node_radius, y + node_radius, fill="lightgray")
