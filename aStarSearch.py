@@ -183,7 +183,7 @@ node_coords = {
 }
 
 # Draw the nodes of the graph
-node_radius = 20
+node_radius = 10
 
 # Draw the nodes of the graph
 for node, coord in node_coords.items():
@@ -196,9 +196,20 @@ for node, edges in graph.items():
     x1, y1 = node_coords[node]
     for edge, distance in edges:
         x2, y2 = node_coords[edge]
+        # Draw the line
         canvas.create_line(x1, y1, x2, y2)
-
-
+        # Retrieve the actual distance from the graph dictionary
+        actual_distance = None
+        for e, dist in graph[node]:
+            if e == edge:
+                actual_distance = dist
+                break
+        # Calculate the text coordinates
+        text_x = (x1 + x2) / 2
+        text_y = (y1 + y2) / 2 - 10
+        # Display the distance value
+        canvas.create_text(text_x, text_y, text=str(actual_distance), font=font_style)
+        
 # Create the source city label and combo box
 source_label = tk.Label(frame, text="Start City:")
 source_label.pack(side=tk.LEFT, padx=10, pady=10)
