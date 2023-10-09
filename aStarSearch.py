@@ -107,16 +107,14 @@ def heuristic(node, goal):
     goal: The name of the goal node.
 
   Returns:
-    A float representing the estimated cost of reaching the goal node from the current node.
+    A int representing the estimated cost of reaching the goal node from the current node.
   """
 
   # Calculate the Manhattan distance between the current node and the goal node.
   x1, y1 = node_coord[node]
   x2, y2 = node_coord[goal]
   manhattan_distance = abs(x1 - x2) + abs(y1 - y2)
-
-  # Round the Manhattan distance to the nearest integer.
-  return round(manhattan_distance,1) + 100
+  return int(manhattan_distance * 100)
   
 
 # Create the GUI
@@ -134,10 +132,10 @@ root.configure(bg="lightblue")
 font_style = ("Arial", 18)
 
 # Add a header with the author's name
-header_label = tk.Label(root, text="Shortest Path Between Cities", font=("Arial", 24), bg="white")
+header_label = tk.Label(root, text="Shortest Path Between Zimbabwean Cities", font=("Arial", 24), bg="white")
 header_label.pack(pady=20)
 
-author_label = tk.Label(root, text="Zimbabwe Cities", font=("Arial", 18), bg="white")
+author_label = tk.Label(root, text="A* Search Group 12", font=("Arial", 18), bg="white")
 author_label.pack()
 
 # Create a frame to hold the canvas and buttons
@@ -166,7 +164,7 @@ node_coord = {
   'P': (-20.3333, 32.7833)
 }
 
-#display
+#for display
 node_coords = {
   'A': (500, 70),
   'B': (80, 450.0),
@@ -200,6 +198,7 @@ for node, edges in graph.items():
         x2, y2 = node_coords[edge]
         canvas.create_line(x1, y1, x2, y2)
 
+
 # Create the source city label and combo box
 source_label = tk.Label(frame, text="Start City:")
 source_label.pack(side=tk.LEFT, padx=10, pady=10)
@@ -229,12 +228,12 @@ def find_shortest_path():
       end = key
   
   
-
   # Find the shortest path and display it
   shortest_path = astar(graph, start, end)
   if shortest_path:
     path_str = ' -> '.join([city_names[vertex] for vertex in shortest_path])
     result_label.config(text=f"Shortest path: {path_str}")
+
     
     # Calculate the heuristic costs for each node
     heuristic_costs = {}
