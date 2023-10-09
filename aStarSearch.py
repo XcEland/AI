@@ -111,11 +111,13 @@ def heuristic(node, goal):
   """
 
   # Calculate the Manhattan distance between the current node and the goal node.
-  x1, y1 = node_coords[node]
-  x2, y2 = node_coords[goal]
+  x1, y1 = node_coord[node]
+  x2, y2 = node_coord[goal]
   manhattan_distance = abs(x1 - x2) + abs(y1 - y2)
 
-  return manhattan_distance
+  # Round the Manhattan distance to the nearest integer.
+  return round(manhattan_distance,1) + 100
+  
 
 # Create the GUI
 root = tk.Tk()
@@ -243,8 +245,7 @@ def find_shortest_path():
     canvas.delete("heuristic_costs")
     
     # Display the heuristic costs on the nodes
-    #changed to coord
-    for node, coord in node_coord.items():
+    for node, coord in node_coords.items():
         x, y = coord
         canvas.create_text(x, y - 20, text=f"{heuristic_costs[node]}", font=font_style, tags="heuristic_costs")
     
