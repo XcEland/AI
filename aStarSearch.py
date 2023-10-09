@@ -1,8 +1,9 @@
 import heapq
-import math
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
+
+from PIL import Image, ImageTk
 
 # Create a dictionary to store the city names
 
@@ -24,19 +25,20 @@ city_names = {
     'P': 'Birchenough Bridge'
 }
 
+
 # Create the graph
 graph = {
     'A': [('D', 295), ('G', 116), ('H', 142), ('K', 75)],
     'B': [('M', 323), ('J', 184), ('E', 162)],
-    'C': [('P', 127), ('L', 93), ('K', 189)],
-    'D': [('M', 290), ('N', 204), ('P', 170), ('J', 97), ('A', 295), ('F', 200), ('E', 183)],
+    'C': [('P', 127), ('L', 92.6), ('K', 189)],
+    'D': [('M', 290), ('N', 204), ('P', 170), ('J', 97.1), ('A', 295), ('F', 200), ('E', 183)],
     'E': [('B', 162), ('D', 183), ('F', 66), ('J', 119)],
-    'F': [('E', 66), ('H', 74), ('D', 200)],
+    'F': [('E', 66), ('H', 74.2), ('D', 200)],
     'G': [('A', 116), ('H', 126)],
-    'H': [('A', 142), ('G', 126), ('F', 74)],
-    'J': [('B', 184), ('D', 97), ('E', 119), ('M', 335)],
+    'H': [('A', 142), ('G', 126), ('F', 74.2)],
+    'J': [('B', 184), ('D', 97.1), ('E', 119), ('M', 335)],
     'K': [('A', 75), ('C', 189), ('L', 96)],
-    'L': [('C', 93), ('K', 96)],
+    'L': [('C', 92.6), ('K', 96)],
     'M': [('B', 323), ('D', 290), ('N', 246), ('J', 335)],
     'N': [('P', 197), ('M', 246), ('D', 204)],
     'P': [('C', 127), ('D', 170), ('N', 197)]
@@ -125,8 +127,21 @@ root.title("Shortest Path Finder")
 root.geometry("800x600")
 root.resizable(width=True, height=True)
 
-# Set the background color
-root.configure(bg="lightblue")
+# Set the background image
+# Load the image
+image = Image.open("E:/AI/bg.jpg")
+
+# Create a canvas widget
+canvas = tk.Canvas(root, width=image.width, height=image.height)
+canvas.pack()
+
+# Create a PhotoImage object from the image
+photo_image = ImageTk.PhotoImage(image)
+
+# Display the image on the canvas widget
+canvas.create_image(0, 0, image=photo_image)
+# Position the canvas behind other components
+canvas.place(x=0, y=0)
 
 # Define the font and size for the text and buttons
 font_style = ("Arial", 18)
@@ -143,7 +158,7 @@ frame = tk.Frame(root)
 frame.pack(side=tk.BOTTOM, pady=20)
 
 # Create the canvas to draw the graph
-canvas = tk.Canvas(root, width=1000, height=800, bg="white")
+canvas = tk.Canvas(root, width=1000, height=800, highlightthickness=0, bd=0)
 canvas.pack(side=tk.TOP, padx=20, pady=20)
 
 # Create a dictionary to store the coordinates of the nodes
@@ -188,7 +203,7 @@ node_radius = 10
 # Draw the nodes of the graph
 for node, coord in node_coords.items():
     x, y = coord
-    canvas.create_oval(x - node_radius, y - node_radius, x + node_radius, y + node_radius, fill="lightgray")
+    canvas.create_oval(x - node_radius, y - node_radius, x + node_radius, y + node_radius, fill="blue")
     canvas.create_text(x, y, text=city_names[node], font=font_style)
 
 # Draw the edges of the graph
@@ -243,8 +258,18 @@ def find_shortest_path():
   shortest_path = astar(graph, start, end)
   if shortest_path:
     path_str = ' -> '.join([city_names[vertex] for vertex in shortest_path])
-    result_label.config(text=f"Shortest path: {path_str}")
-
+    
+    # Calculate the total actual distance along the shortest path
+    total_distance = 0
+    for i in range(len(shortest_path) - 1):
+            node1 = shortest_path[i]
+            node2 = shortest_path[i + 1]
+            for edge, distance in graph[node1]:
+                if edge == node2:
+                    total_distance += distance
+                    break
+                  
+    result_label.config(text=f"Shortest path: {path_str} (Total Distance: {total_distance} km.)")
     
     # Calculate the heuristic costs for each node
     heuristic_costs = {}
@@ -257,7 +282,7 @@ def find_shortest_path():
     # Display the heuristic costs on the nodes
     for node, coord in node_coords.items():
         x, y = coord
-        canvas.create_text(x, y - 20, text=f"{heuristic_costs[node]}", font=font_style, tags="heuristic_costs")
+        canvas.create_text(x, y - 20, text=f"{heuristic_costs[node]}", font=font_style, fill="green", tags="heuristic_costs")
     
     # Highlight the shortest path on the graph
     canvas.delete("highlight")
