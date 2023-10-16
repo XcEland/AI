@@ -158,7 +158,7 @@ frame = tk.Frame(root)
 frame.pack(side=tk.BOTTOM, pady=20)
 
 # Create the canvas to draw the graph
-canvas = tk.Canvas(root, width=1000, height=800, highlightthickness=0, bd=0)
+canvas = tk.Canvas(root, width=1000, height=800)
 canvas.pack(side=tk.TOP, padx=20, pady=20)
 
 # Create a dictionary to store the coordinates of the nodes
