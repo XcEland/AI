@@ -28,14 +28,14 @@ city_names = {
 
 # Create the graph
 graph = {
-    'A': [('D', 295), ('G', 116), ('H', 142), ('K', 75)],
-    'B': [('M', 323), ('J', 184), ('E', 162)],
+    'A': [('D', 295), ('G', 116), ('H', 172), ('K', 75)],
+    'B': [('M', 323), ('J', 184), ('E', 182)],
     'C': [('P', 127), ('L', 92.6), ('K', 189)],
     'D': [('M', 290), ('N', 204), ('P', 170), ('J', 97.1), ('A', 295), ('F', 200), ('E', 183)],
-    'E': [('B', 162), ('D', 183), ('F', 66), ('J', 119)],
-    'F': [('E', 66), ('H', 74.2), ('D', 200)],
+    'E': [('B', 182), ('D', 183), ('F',76), ('J', 119)],
+    'F': [('E', 76), ('H', 84.2), ('D', 200)],
     'G': [('A', 116), ('H', 126)],
-    'H': [('A', 142), ('G', 126), ('F', 74.2)],
+    'H': [('A', 172), ('G', 126), ('F', 84.2)],
     'J': [('B', 184), ('D', 97.1), ('E', 119), ('M', 335)],
     'K': [('A', 75), ('C', 189), ('L', 96)],
     'L': [('C', 92.6), ('K', 96)],
@@ -164,6 +164,7 @@ canvas.pack(side=tk.TOP, padx=20, pady=20)
 # Create a dictionary to store the coordinates of the nodes
 node_coord = {
   'A': (-17.8292, 31.0522),
+  #'A': (-17.8292, 31.0522),
   'B': (-20.1700, 28.5800),
   'C': (-18.9667, 32.6333),
   'D': (-20.0744, 30.8328),
@@ -291,7 +292,7 @@ def find_shortest_path():
       node2 = shortest_path[i+1]
       x1, y1 = node_coords[node1]
       x2, y2 = node_coords[node2]
-      canvas.create_line(x1, y1, x2, y2, width=3, fill="blue", tags="highlight")
+      canvas.create_line(x1, y1, x2, y2, width=3, fill="red", tags="highlight")
   else:
     result_label.config(text="No path found")
     canvas.delete("highlight")
